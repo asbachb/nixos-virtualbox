@@ -43,7 +43,7 @@ with lib;
 
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
-
+  
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -97,10 +97,18 @@ with lib;
 
   services.xserver.videoDrivers = mkOverride 40 ["virtualbox" "vmware" "cirrus" "vesa" "modesetting"];
 
+  virtualisation.lxc = {
+    enable = true;
+    lxcfs.enable = true;
+    defaultConfig = "lxc.include = ${pkgs.lxcfs}/share/lxc/config/common.conf.d/00-lxcfs.conf";
+  };
+
+  virtualisation.lxd.enable = true;
+  
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.vm = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "vboxsf" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "vboxsf" "lxd" ]; # Enable ‘sudo’ for the user.
   };
 
   # This value determines the NixOS release with which your system is to be
